@@ -7,6 +7,7 @@ import Products from './pages/Home/Products';
 import ProductDetails from './pages/Home/ProductDetails';
 import Cart from './pages/Home/Cart';
 import Category from './pages/Home/Category';
+import User from './pages/User/User';
 
 export default function App (){
 
@@ -42,6 +43,10 @@ export default function App (){
     {
       path: "/cart",
       element: <Cart />,
+    },
+    {
+      path: "/account",
+      element: <User />,
     },
   ],{
     basename:'/',

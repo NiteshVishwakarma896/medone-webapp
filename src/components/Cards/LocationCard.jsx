@@ -11,11 +11,11 @@ export default function LocationCard(props) {
             pincode:props.pincode,
             state:props.state,
         })
-        localStorage.setItem('locationGlobal',{
+        localStorage.setItem('locationGlobal',JSON.stringify({
             location:props.name,
             pincode:props.pincode,
             state:props.state,
-        })
+        }))
         props.parentCallBack(true)
     }
     return (

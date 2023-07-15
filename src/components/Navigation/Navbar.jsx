@@ -1,12 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Box,Text,Button,Stack,Center,Divider,Input, IconButton, HStack, Tag,} from '@chakra-ui/react'
+import { Box,Text,Button,Stack,Center,Divider,Input, IconButton, HStack, Tag, Menu, MenuButton, MenuList, MenuItem, MenuDivider, MenuGroup} from '@chakra-ui/react'
 import NavigationDrawer from '../Drawer/NavigationDrawer'
 import LocationDrawer from '../Drawer/LocationDrawer'
-import { Search2Icon } from '@chakra-ui/icons'
+import { ChevronDownIcon, Search2Icon } from '@chakra-ui/icons'
 import { useNavigate } from 'react-router-dom'
+import { useGlobalData } from '../../context/GlobalContext'
+import { Person } from 'react-bootstrap-icons'
 
 export default function Navbar() {
     const searchRef = useRef(null);
+    const {globalData} = useGlobalData();
     const [show, setShow] = useState(false);
     const [lastScrollY, setLastScrollY] = useState(0);
     const navigation = useNavigate();
@@ -55,13 +58,44 @@ export default function Navbar() {
                     <Box className='mobile-hide' style={{display:'flex',flexDirection:'row',alignItems:'flex-end'}}>
                         <Stack spacing={1} direction='row' align='center'>
                             <Button onClick={()=>navigation('/cart')} colorScheme='white' variant='ghost' style={{display:'flex',flexDirection:'row',alignItems:'center'}}>
+                                <i className="bi bi-percent" style={{fontSize:'1.15rem',marginRight:'0.5rem'}}></i>
+                                <Text color={'gray.700'} fontWeight={'medium'} style={{fontSize:'0.85rem'}}>Offers</Text>
+                            </Button >
+                            <Button onClick={()=>navigation('/cart')} colorScheme='white' variant='ghost' style={{display:'flex',flexDirection:'row',alignItems:'center'}}>
                                 <i className="bi bi-cart3" style={{fontSize:'1.25rem',marginRight:'0.5rem'}}></i>
-                                <span style={{fontSize:'0.85rem'}}>Cart</span>
+                                <Text color={'gray.700'} fontWeight={'medium'} style={{fontSize:'0.85rem'}}>Cart</Text>
                             </Button >
-                            <Button onClick={()=>navigation('/login')} colorScheme='white' variant='ghost' style={{display:'flex',flexDirection:'row',alignItems:'center'}}>
-                                <i className="bi bi-person" style={{fontSize:'1.25rem',marginRight:'0.5rem'}}></i>
-                                <span style={{fontSize:'0.85rem'}}>Hello, Log In</span>
-                            </Button >
+                            {
+                                globalData.token?(
+                                    <Menu>
+                                        <MenuButton as={Button} variant={'unstyled'} style={{display:'flex',flexDirection:'row',alignItems:'center'}} leftIcon={<Person style={{fontSize:"1.25rem"}}/>} rightIcon={<ChevronDownIcon />}>
+                                            <Text fontSize={'sm'} fontWeight={'medium'} color={'gray.700'}>{globalData.name?globalData.name:null}</Text>
+                                        </MenuButton>
+                                        <MenuList>
+                                            <MenuGroup title='Profile'>
+                                                <MenuItem onClick={()=>navigation('/account')} fontSize={'sm'}>Your Account</MenuItem>
+                                                <MenuItem onClick={()=>navigation('/account')} fontSize={'sm'}>Orders </MenuItem>
+                                                <MenuItem onClick={()=>navigation('/account')} fontSize={'sm'}>Your Addresses </MenuItem>
+                                            </MenuGroup>
+                                            <MenuDivider />
+                                            <MenuGroup title='Help'>
+                                                <MenuItem fontSize={'sm'}>Docs</MenuItem>
+                                                <MenuItem fontSize={'sm'}>FAQ</MenuItem>
+                                                <MenuItem fontSize={'sm'}>Help & Support</MenuItem>
+                                            </MenuGroup>
+                                            <MenuDivider />
+                                            <MenuItem fontSize={'sm'}>Logout</MenuItem>
+                                        </MenuList>
+                                    </Menu>
+                                ):(
+                                    <Button onClick={()=>navigation('/login')} colorScheme='white' variant='ghost' style={{display:'flex',flexDirection:'row',alignItems:'center'}}>
+                                        <i className="bi bi-person" style={{fontSize:'1.25rem',marginRight:'0.5rem'}}></i>
+                                        <span style={{fontSize:'0.85rem'}}>Hello, Log In</span>
+                                    </Button >
+                                )
+                            }
+                            
+                            
                         </Stack>
                     </Box>
                     <Button onClick={()=>navigation('/cart')} className='desktop-hide' colorScheme='white' variant='ghost' style={{display:'flex',flexDirection:'row',alignItems:'center'}}>

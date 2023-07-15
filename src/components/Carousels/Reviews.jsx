@@ -108,7 +108,7 @@ export default function Reviews() {
                 {
                     data && data.length>0?(
                         data.map((e,i)=>(
-                            <Review user={e.user} datetime={e.datetime} text={e.text} />
+                            <Review key={i} user={e.user} datetime={e.datetime} text={e.text} />
                         ))
                     ):null
                 }

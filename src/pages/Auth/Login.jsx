@@ -1,10 +1,118 @@
-import React from 'react';
-import { Flex,Box,FormControl,FormLabel,Input,Checkbox,Stack,Link,Button,Heading,Text,useColorModeValue } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
+import { Flex,Box,FormControl,FormLabel,Input,Checkbox,Stack,Link,Button,Heading,Text,useColorModeValue, useToast } from '@chakra-ui/react';
 import Footer from '../../components/Navigation/Footer';
 import { useNavigate } from 'react-router-dom';
+import { useGlobalData } from '../../context/GlobalContext';
+import { apiUrl } from './../../utils/url';
   
 export default function Login() {
     const navigation = useNavigate();
+    const toast = useToast();
+    const [email,setEmail] = useState(null);
+    const [password,setPassword] = useState(null);
+    const {setGlobalData} = useGlobalData();
+    const isLoggedIn = localStorage.getItem('user');
+    // 
+    const _handlerLogin = ()=>{
+        if(email === null || password === null){
+            toast({
+                description:"Please fill in the email and password to continue !",
+                status:'error',
+                isClosable:true,
+                duration:3000,
+                variant:'subtle'
+            })
+        }
+        else{
+            try {
+                fetch(`${apiUrl}/users/signin`,{
+                    method:"POST",
+                    headers:{
+                        'Accept':'application/json',
+                        'Content-Type':'application/json'
+                    },
+                    body: JSON.stringify({
+                        email:email,
+                        password:password
+                    })
+                })
+                .then(res=>
+                    {
+                        if(res.status === 401){
+                            toast({
+                                title:"Invalid email or password",
+                                description:"Please enter correct email id or password to continue !",
+                                status:'error',
+                                isClosable:true,
+                                duration:3000,
+                                variant:'subtle'
+                            })
+                            return res.json()
+                        }
+                        else{
+                            return res.json()
+                        }
+                    })
+                .then(data=>{
+                    if(data.status === "403"){
+                        toast({
+                            title:"Contact help & support",
+                            description:data.error,
+                            status:'error',
+                            isClosable:true,
+                            duration:3000,
+                            variant:'subtle'
+                        })
+                    }
+                    if( data && data.status === "200"){
+                        setGlobalData({token:data.token});
+                        _getUserProfile(data.token)
+                        navigation(`/`);
+                    }
+                })
+            } catch (error) {
+                console.log(error)
+            }
+        }
+
+    }
+    const _getUserProfile = (authToken)=>{
+        try {
+            fetch(`${apiUrl}/users/profile`,{
+                method:"GET",
+                headers:{
+                    "Accept":"application/json",
+                    "Content-Type":"application/json",
+                    "Authorization": authToken
+                }
+            }).then(res=>res.json())
+            .then(data=>{
+                if(data.status === "200"){
+                    setGlobalData({name:data.data.name,email:data.data.email})
+                    localStorage.setItem('user',JSON.stringify({
+                        token:authToken,
+                        name:data.data.name,
+                        email:data.data.email
+                    }))
+                }
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    // 
+    useEffect(()=>{
+        document.title="Sign In - MedOne | Medicines at your doorstep"
+        if(isLoggedIn){
+            setGlobalData({
+                token:isLoggedIn.token,
+                name:isLoggedIn.name,
+                email:isLoggedIn.email,
+            })
+            navigation(`/`);
+        }
+    },[])
+    // 
     return (
         <React.Fragment>
         <Flex minH={'100vh'} align={'center'} justify={'center'} className='auth-bg'>
@@ -27,11 +135,11 @@ export default function Login() {
                 <Stack spacing={4} mt={'12'}>
                     <FormControl id="email">
                     <FormLabel fontSize={'sm'}>Email address</FormLabel>
-                    <Input type="email" />
+                    <Input type="email" onChange={(e)=>setEmail(e.target.value)} />
                     </FormControl>
                     <FormControl id="password">
                     <FormLabel fontSize={'sm'}>Password</FormLabel>
-                    <Input type="password" />
+                    <Input type="password" onChange={(e)=>setPassword(e.target.value)} />
                     </FormControl>
                     <Stack spacing={10}>
                     <Stack
@@ -41,6 +149,7 @@ export default function Login() {
                         <Link fontSize={'sm'} color={'blue.400'}>Forgot password?</Link>
                     </Stack>
                     <Button
+                        onClick={_handlerLogin}
                         bg={'blue.400'}
                         color={'white'}
                         _hover={{
