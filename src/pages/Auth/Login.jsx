@@ -8,6 +8,7 @@ import { apiUrl } from './../../utils/url';
 export default function Login() {
     const navigation = useNavigate();
     const toast = useToast();
+    const [loading,setLoading] = useState(false);
     const [email,setEmail] = useState(null);
     const [password,setPassword] = useState(null);
     const {setGlobalData} = useGlobalData();
@@ -65,9 +66,9 @@ export default function Login() {
                         })
                     }
                     if( data && data.status === "200"){
+                        setLoading(true);
                         setGlobalData({token:data.token});
                         _getUserProfile(data.token)
-                        navigation(`/`);
                     }
                 })
             } catch (error) {
@@ -89,11 +90,13 @@ export default function Login() {
             .then(data=>{
                 if(data.status === "200"){
                     setGlobalData({name:data.data.name,email:data.data.email})
+                    setLoading(false);
                     localStorage.setItem('user',JSON.stringify({
                         token:authToken,
                         name:data.data.name,
                         email:data.data.email
                     }))
+                    window.location.href = `/`;
                 }
             })
         } catch (error) {
@@ -149,6 +152,8 @@ export default function Login() {
                         <Link fontSize={'sm'} color={'blue.400'}>Forgot password?</Link>
                     </Stack>
                     <Button
+                        isLoading={loading}
+                        loadingText="Please wait..."
                         onClick={_handlerLogin}
                         bg={'blue.400'}
                         color={'white'}

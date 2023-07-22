@@ -10,9 +10,11 @@ import 'react-multi-carousel/lib/styles.css';
 import { apiUrl } from '../../utils/url'
 import { calculateDiscount } from '../../utils/calculateDiscount'
 import parse from 'html-react-parser';
+import { useGlobalData } from './../../context/GlobalContext';
 
 export default function ProductDetails() {
     const location = useLocation();
+    const {globalData} = useGlobalData();
     const toast = useToast();
     // 
     const [productID,setProductID] = useState(null);
@@ -52,6 +54,15 @@ export default function ProductDetails() {
         if(productQty == 0){
             toast({
                 description:"No quantity selected, please select quantity !",
+                duration:3000,
+                variant:'subtle',
+                isClosable:true,
+                status:'error'
+            })
+        }
+        else if(globalData.token == null){
+            toast({
+                description:"Login to add items to cart !",
                 duration:3000,
                 variant:'subtle',
                 isClosable:true,
@@ -144,7 +155,7 @@ export default function ProductDetails() {
                             </BreadcrumbItem>
 
                             <BreadcrumbItem isCurrentPage>
-                                <BreadcrumbLink as={Link} fontSize={'small'} to='#'>Product Name</BreadcrumbLink>
+                                <BreadcrumbLink noOfLines={1} as={Link} fontSize={'small'} to='#'>{product.product_name}</BreadcrumbLink>
                             </BreadcrumbItem>
                         </Breadcrumb>
                         <SimpleGrid w={'100%'} columns={{ base: 1, lg: 2 }} spacing={{ base: 8, md: 10 }} py={{ base: 18, md: 8 }}>

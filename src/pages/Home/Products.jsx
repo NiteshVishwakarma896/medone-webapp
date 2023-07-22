@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Navbar from '../../components/Navigation/Navbar'
 import Footer from '../../components/Navigation/Footer'
 import { Box, Breadcrumb, BreadcrumbItem, BreadcrumbLink, Button, Center, Checkbox, Container, Divider, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, HStack, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Select, SimpleGrid, Stack, Tag, Text, useDisclosure } from '@chakra-ui/react'
-import { Link, ScrollRestoration, useLocation } from 'react-router-dom'
+import { Link, ScrollRestoration, useLocation, useNavigate } from 'react-router-dom'
 import { Filter, SortUp } from 'react-bootstrap-icons'
 import FilterSideBox from '../../components/Filter/FilterSideBox'
 import Product from '../../components/Cards/Product'
@@ -10,6 +10,7 @@ import { apiUrl } from '../../utils/url'
 
 export default function Products() {
     const location = useLocation();
+    const navigation = useNavigate();
     const { isOpen: isFilterOpen , onOpen: onFilterOpen, onClose: onFilterClose } = useDisclosure()
     const { isOpen: isSortOpen , onOpen: onSortOpen, onClose: onSortClose } = useDisclosure()
     // 
@@ -71,8 +72,8 @@ export default function Products() {
                 <HStack alignItems={'center'} className='mobile-hide' spacing={4} mt={'4'}>
                     {
                         categories?(
-                            categories.map((e,i)=>(
-                                <Tag key={i} cursor={'pointer'} size={'sm'} variant='solid' colorScheme='teal' fontWeight={'light'}>
+                            categories.slice(0,10).map((e,i)=>(
+                                <Tag onClick={()=>navigation(`/search/categories/${e.category_name}`,{state:{name:e.category_name}})} key={i} cursor={'pointer'} size={'sm'} variant='solid' colorScheme='teal' fontWeight={'light'}>
                                     {e.category_name}
                                 </Tag>
                             ))

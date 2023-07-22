@@ -8,6 +8,7 @@ export default function LocationDrawer() {
     const {globalData} = useGlobalData();
     const { isOpen, onOpen, onClose } = useDisclosure()
     const [pinCode,setPinCode] = useState(null);
+    const [loading,setLoading] = useState(false);
     const [avaliableLocations,setAvaliableLocations] = useState([]);
     const toast = useToast();
     const btnLocationRef = React.useRef()
@@ -15,18 +16,13 @@ export default function LocationDrawer() {
     const checkAvaliableLocations = () =>{
         setAvaliableLocations([]);
         if(pinCode){
+            setLoading(true);
             fetch(apiPostPinCodeUrl+`/${pinCode}`)
             .then(res=>res.json())
             .then(data=>{
                 if(data[0].Status === "Success"){
                     setAvaliableLocations(data[0].PostOffice)
-                    toast({
-                        description:"Your location is avaliable",
-                        duration:3000,
-                        variant:'subtle',
-                        status:'success',
-                        isClosable:true
-                    })
+                    setLoading(false)
                 }
             })
         }
@@ -74,8 +70,8 @@ export default function LocationDrawer() {
                     <DrawerBody p={8}>
                         <Text fontSize={'small'} ml={'1'} mb={'1'} color={'gray.600'} fontWeight={'light'} >Enter Pincode to check avaliablity</Text>
                         <Box w={'100%'} display={'flex'} flexDirection={'row'} alignItems={'center'} justifyContent={'center'}>
-                            <Input onChange={(e)=>setPinCode(e.target.value)} type='number' placeholder='Enter PinCode..' fontSize={'sm'} />
-                            <Button onClick={()=>checkAvaliableLocations()} variant={'solid'} colorScheme={'teal'}>Check</Button>
+                            <Input onChange={(e)=>setPinCode(e.target.value)} type='number' placeholder='Enter PinCode..' fontSize={'sm'} borderRightRadius={'0'} />
+                            <Button isLoading={loading} onClick={()=>checkAvaliableLocations()} variant={'solid'} colorScheme={'teal'} borderLeftRadius={'0'}>Check</Button>
                         </Box>
                         {
                             avaliableLocations.length>0?(
@@ -84,10 +80,14 @@ export default function LocationDrawer() {
                                 ))
                             ):(null)
                         }
+                       
                     </DrawerBody>
 
                     <DrawerFooter>
-
+                        <Box>
+                            <Text mb={'6'} fontSize={'small'} color={'gray.400'}>Locations shown might not be accurate it shows your residing area, at the time of order add complete address.</Text>
+                            <Text fontSize={'sm'}>© 2022 MedOne | All In One Pharmacy. All rights reserved</Text>
+                        </Box>
                     </DrawerFooter>
                 </DrawerContent>
             </Drawer>
