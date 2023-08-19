@@ -89,13 +89,13 @@ export default function Login() {
             }).then(res=>res.json())
             .then(data=>{
                 if(data.status === "200"){
-                    setGlobalData({name:data.data.name,email:data.data.email})
                     setLoading(false);
                     localStorage.setItem('user',JSON.stringify({
                         token:authToken,
                         name:data.data.name,
                         email:data.data.email
                     }))
+                    setGlobalData({name:data.data.name,email:data.data.email})
                     window.location.href = `/`;
                 }
             })
@@ -112,7 +112,7 @@ export default function Login() {
                 name:isLoggedIn.name,
                 email:isLoggedIn.email,
             })
-            navigation(`/`);
+            window.location.href = '/';
         }
     },[])
     // 

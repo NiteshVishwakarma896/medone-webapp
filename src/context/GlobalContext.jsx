@@ -3,12 +3,14 @@ export const GlobalContext = createContext();
 
 export const GlobalDataProvider = ({ children })=>{
   const [globalData, setGlobalData] = useState({
-    location:null,
-    pincode:null,
-    state:null,
     token:null,
     name:null,
     email:null,
+  });
+  const [globalLocation, setGlobalLocation] = useState({
+    location:null,
+    pincode:null,
+    state:null,
   });
   const locationLocalStorage = JSON.parse(localStorage.getItem('locationGlobal'))
   const userLocalStorage = JSON.parse(localStorage.getItem('user'))
@@ -16,18 +18,20 @@ export const GlobalDataProvider = ({ children })=>{
   useEffect(()=>{
     if(locationLocalStorage && userLocalStorage){
       setGlobalData({
-        location:locationLocalStorage.location,
-        pincode:locationLocalStorage.pincode,
-        state:locationLocalStorage.state,
         token:userLocalStorage.token,
         name:userLocalStorage.name,
         email:userLocalStorage.email,
+      })
+      setGlobalLocation({
+        location:locationLocalStorage.location,
+        pincode:locationLocalStorage.pincode,
+        state:locationLocalStorage.state,
       })
     }
   },[]);
 
   return (
-    <GlobalContext.Provider value={{globalData, setGlobalData}} >
+    <GlobalContext.Provider value={{globalData, setGlobalData, globalLocation, setGlobalLocation}} >
       {children}
     </GlobalContext.Provider>
   );

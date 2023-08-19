@@ -10,7 +10,7 @@ import { apiUrl } from '../../utils/url'
 
 export default function Navbar() {
     const searchRef = useRef(null);
-    const {globalData} = useGlobalData();
+    const {globalData,globalLocation} = useGlobalData();
     const [show, setShow] = useState(false);
     const [lastScrollY, setLastScrollY] = useState(0);
     const [data,setData] = useState([]);
@@ -150,13 +150,13 @@ export default function Navbar() {
                     ):null
                 }
                 {
-                    globalData.location?(
+                    globalLocation.location?(
                         <Box className='search-header desktop-hide' borderTop={'1px dashed'} borderColor={'gray.300'} pt={'3'} pl={'4'} pr={'4'} pb={'2.5'}>
                             <Box style={{display:'flex',flexDirection:'row',alignItems:'center'}}>
                                 <Text fontSize={'sm'} color={'blackAlpha.800'} fontWeight={'medium'}>Deliver to: </Text>
-                                <Text fontSize={'small'} w={'fit-content'} noOfLines={1} textOverflow={'ellipsis'} ml={'2'} color={'teal.700'} fontWeight={'semibold'}>{globalData.location}</Text>
+                                <Text fontSize={'small'} w={'fit-content'} noOfLines={1} textOverflow={'ellipsis'} ml={'2'} color={'teal.700'} fontWeight={'semibold'}>{globalLocation.location}</Text>
                             </Box>
-                            <Text fontSize={'sm'} ml={'auto'} color={'teal.700'} fontWeight={'bold'}>{globalData.pincode}</Text>
+                            <Text fontSize={'sm'} ml={'auto'} color={'teal.700'} fontWeight={'bold'}>{globalLocation.pincode}</Text>
                         </Box>
                     ):null
                 }

@@ -5,7 +5,7 @@ import LocationCard from '../Cards/LocationCard';
 import { useGlobalData } from '../../context/GlobalContext';
 
 export default function LocationDrawer() {
-    const {globalData} = useGlobalData();
+    const {globalData,globalLocation} = useGlobalData();
     const { isOpen, onOpen, onClose } = useDisclosure()
     const [pinCode,setPinCode] = useState(null);
     const [loading,setLoading] = useState(false);
@@ -46,9 +46,9 @@ export default function LocationDrawer() {
             <Button colorScheme='white' variant='unstyled'  ref={btnLocationRef} onClick={onOpen} style={{display:'flex',flexDirection:'row',alignItems:'center'}}>
                 <i className="bi bi-geo-alt-fill" style={{fontSize:'1rem',marginRight:'0.5rem'}}></i>
                 <span className='mobile-hide' style={{fontSize:'0.90rem',fontWeight:'initial'}}>{
-                    globalData.location?(globalData.location):('Select Location')
+                    globalLocation.location?(globalLocation.location):('Select Location')
                 }</span>
-                <span className='mobile-hide' style={{fontSize:'0.90rem',fontWeight:'revert',marginLeft:'8px',marginRight:'0.5rem'}}>{globalData.pincode}</span>
+                <span className='mobile-hide' style={{fontSize:'0.90rem',fontWeight:'revert',marginLeft:'8px',marginRight:'0.5rem'}}>{globalLocation.pincode}</span>
                 <i className="bi bi-caret-down-fill" style={{fontSize:'0.8rem'}}></i>
             </Button >
             <Drawer

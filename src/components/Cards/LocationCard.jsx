@@ -4,9 +4,9 @@ import { GeoAltFill } from 'react-bootstrap-icons'
 import {useGlobalData} from '../../context/GlobalContext';
 
 export default function LocationCard(props) {
-    const {setGlobalData} = useGlobalData();
+    const {setGlobalLocation} = useGlobalData();
     const setLocationData = ()=>{
-        setGlobalData({
+        setGlobalLocation({
             location:props.name,
             pincode:props.pincode,
             state:props.state,
